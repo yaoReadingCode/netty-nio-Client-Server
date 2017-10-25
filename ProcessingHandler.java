@@ -6,7 +6,7 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 
 
 public class ProcessingHandler extends ChannelInboundHandlerAdapter {
-    final ChannelGroup channels =
+    private static final ChannelGroup channels =
             new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {

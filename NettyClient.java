@@ -31,10 +31,10 @@ public class NettyClient {
             Object msg = promise.get();
             System.out.println(msg.toString());
 
-           // f.channel().closeFuture().sync();
+           f.channel().closeFuture().sync();
         }
         finally {
-           // workerGroup.shutdownGracefully();
+           //workerGroup.shutdownGracefully();
         }
     }
 }
