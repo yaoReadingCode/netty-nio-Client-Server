@@ -22,6 +22,6 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         System.out.println(msg);
         promise.trySuccess(msg);
-        ctx.close();
+        //ctx.close();
     }
 }

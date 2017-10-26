@@ -13,8 +13,6 @@ public class ResponseData {
 
     @Override
     public String toString() {
-        return "paok{" +
-                "intValue=" + intValue +
-                '}';
+        return "" + intValue;
     }
 }

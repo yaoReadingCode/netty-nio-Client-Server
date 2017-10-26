@@ -8,7 +8,9 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.Promise;
 
 public class NettyClient {
-    public static void main(String[] args) throws Exception {
+
+    public static int callBack () throws Exception{
+
         String host = "localhost";
         int port = 8080;
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -25,16 +27,19 @@ public class NettyClient {
                     ch.pipeline().addLast(new RequestDataEncoder(), new ResponseDataDecoder(), new ClientHandler(promise));
                 }
             });
-
             ChannelFuture f = b.connect(host, port).sync();
-
             Object msg = promise.get();
-            System.out.println(msg.toString());
-
-           f.channel().closeFuture().sync();
+            System.out.println("The  number if the connected clients: " + msg.toString());
+            f.channel().closeFuture().sync();
+            return  Integer.parseInt(msg.toString());
         }
         finally {
-           //workerGroup.shutdownGracefully();
+            //workerGroup.shutdownGracefully();
         }
+    }
+
+    public static void main(String[] args) throws Exception {
+
+       int ret = callBack();
     }
 }
