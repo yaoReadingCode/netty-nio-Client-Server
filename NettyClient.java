@@ -9,12 +9,13 @@ import io.netty.util.concurrent.Promise;
 
 public class NettyClient {
 
-    public static int callBack () throws Exception{
+    static EventLoopGroup workerGroup = new NioEventLoopGroup();
+    static Promise<Object> promise = workerGroup.next().newPromise();
+
+    public static void callBack () throws Exception{
 
         String host = "localhost";
         int port = 8080;
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
-        Promise<Object> promise = workerGroup.next().newPromise();
 
         try {
             Bootstrap b = new Bootstrap();
@@ -28,10 +29,7 @@ public class NettyClient {
                 }
             });
             ChannelFuture f = b.connect(host, port).sync();
-            Object msg = promise.get();
-            System.out.println("The  number if the connected clients: " + msg.toString());
-            f.channel().closeFuture().sync();
-            return  Integer.parseInt(msg.toString());
+            //f.channel().closeFuture().sync();
         }
         finally {
             //workerGroup.shutdownGracefully();
@@ -40,6 +38,15 @@ public class NettyClient {
 
     public static void main(String[] args) throws Exception {
 
-       int ret = callBack();
+       callBack();
+        while (true) {
+            Object msg = promise.get();
+            System.out.println("The number if the connected clients is not two");
+            int ret = Integer.parseInt(msg.toString());
+            if (ret == 2){
+                break;
+            }
+        }
+       System.out.println("The number if the connected clients is two");
     }
 }
