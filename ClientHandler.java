@@ -4,10 +4,12 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.concurrent.Promise;
 
+import java.util.function.IntConsumer;
+
 public class ClientHandler extends ChannelInboundHandlerAdapter {
-    public final Promise<Object> promise;
-    public ClientHandler(Promise<Object> promise) {
-        this.promise = promise;
+    public final IntConsumer update;
+    public ClientHandler(IntConsumer update) {
+        this.update = update;
     }
 
     @Override
@@ -21,7 +23,6 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         System.out.println(msg);
-        promise.trySuccess(msg);
-        //ctx.close();
+        update.accept((Integer)(msg));
     }
 }

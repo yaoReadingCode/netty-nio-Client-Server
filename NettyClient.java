@@ -11,6 +11,8 @@ public class NettyClient {
 
     static EventLoopGroup workerGroup = new NioEventLoopGroup();
     static Promise<Object> promise = workerGroup.next().newPromise();
+    private static volatile int connectedClients = 0;
+    private static final Object lock = new Object();
 
     public static void callBack () throws Exception{
 
@@ -25,7 +27,13 @@ public class NettyClient {
             b.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(new RequestDataEncoder(), new ResponseDataDecoder(), new ClientHandler(promise));
+                    ch.pipeline().addLast(new RequestDataEncoder(), new ResponseDataDecoder(),
+                            new ClientHandler(i -> {
+                                synchronized (lock) {
+                                    connectedClients = i;
+                                    lock.notifyAll();
+                                }
+                            }));
                 }
             });
             ChannelFuture f = b.connect(host, port).sync();
@@ -39,14 +47,19 @@ public class NettyClient {
     public static void main(String[] args) throws Exception {
 
        callBack();
-        while (true) {
-            Object msg = promise.get();
-            System.out.println("The number if the connected clients is not two");
-            int ret = Integer.parseInt(msg.toString());
-            if (ret == 2){
-                break;
+        int connected = connectedClients;
+        if (connected != 2) {
+            System.out.println("The number if the connected clients is not two before locking");
+            synchronized (lock) {
+                while (true) {
+                    connected = connectedClients;
+                    if (connected == 2)
+                        break;
+                    System.out.println("The number if the connected clients is not two");
+                    lock.wait();
+                }
             }
         }
-       System.out.println("The number if the connected clients is two");
+        System.out.println("The number if the connected clients is two: " + connected );
     }
 }
