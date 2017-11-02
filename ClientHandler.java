@@ -23,6 +23,6 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         System.out.println(msg);
-        update.accept((Integer)(msg));
+        update.accept(Integer.parseInt(msg.toString()));
     }
 }
