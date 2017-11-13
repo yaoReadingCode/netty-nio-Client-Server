@@ -1,20 +1,23 @@
 package chat;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.Promise;
+import java.util.concurrent.TimeUnit;
 
 public class NettyClient {
 
     static EventLoopGroup workerGroup = new NioEventLoopGroup();
     static Promise<Object> promise = workerGroup.next().newPromise();
     private static volatile int connectedClients = 0;
-    private static final Object lock = new Object();
+    private static final Object lock = new Object() ;
 
-    public static void callBack () throws Exception{
+    public static ChannelFuture callBack () throws Exception{
 
         String host = "localhost";
         int port = 8080;
@@ -38,6 +41,8 @@ public class NettyClient {
             });
             ChannelFuture f = b.connect(host, port).sync();
             //f.channel().closeFuture().sync();
+
+            return f;
         }
         finally {
             //workerGroup.shutdownGracefully();
@@ -46,7 +51,15 @@ public class NettyClient {
 
     public static void main(String[] args) throws Exception {
 
-       callBack();
+        ChannelFuture ret;
+        ClientHandler obj = new ClientHandler(i -> {
+            synchronized (lock) {
+                connectedClients = i;
+                lock.notifyAll();
+            }
+        });
+
+       ret = callBack();
         int connected = connectedClients;
         if (connected != 2) {
             System.out.println("The number if the connected clients is not two before locking");
@@ -61,5 +74,8 @@ public class NettyClient {
             }
         }
         System.out.println("The number if the connected clients is two: " + connected );
+        RequestData msg = new RequestData();
+        msg.setStringValue("welcome from the fake client");
+        ret.channel().writeAndFlush(msg);
     }
 }

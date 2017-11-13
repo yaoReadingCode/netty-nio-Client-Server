@@ -8,7 +8,7 @@ public class RequestData {
         return intValue;
     }
 
-    void setIntValue(int intValue) {
+    public void setIntValue(int intValue) {
         this.intValue = intValue;
     }
 
@@ -16,7 +16,7 @@ public class RequestData {
         return stringValue;
     }
 
-    void setStringValue(String stringValue) {
+    public void setStringValue(String stringValue) {
         this.stringValue = stringValue;
     }
 
