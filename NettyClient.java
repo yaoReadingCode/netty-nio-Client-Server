@@ -75,7 +75,7 @@ public class NettyClient {
         }
         System.out.println("The number if the connected clients is two: " + connected );
         RequestData msg = new RequestData();
-        msg.setStringValue("welcome from the fake client");
+        msg.setIntValue(4444);
         ret.channel().writeAndFlush(msg);
     }
 }

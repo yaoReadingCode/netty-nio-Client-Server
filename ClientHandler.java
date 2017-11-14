@@ -29,19 +29,15 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("the servers message is the following: " +msg);
+        System.out.println("The message sent from the server: " + msg);
         update.accept(Integer.parseInt(msg.toString()));
-    }
-
-    public void messageReceived(Object msg) throws Exception {
-        ctx.fireChannelRead(msg);
     }
 
     public void sendMessage(String msgToSend) {
         if (ctx != null) {
             ChannelFuture cf = ctx.writeAndFlush(Unpooled.copiedBuffer(msgToSend, CharsetUtil.UTF_8));
             if (!cf.isSuccess()) {
-                System.out.println("Send failed to be sent: " + cf.cause());
+                System.out.println("Send failed: " + cf.cause());
             }
         } else {
             //ctx not initialized yet. you were too fast. do something here

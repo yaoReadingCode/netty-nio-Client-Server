@@ -33,7 +33,10 @@ public class NettyServer {
             b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class).childHandler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(new RequestDecoder(), new ResponseDataEncoder(), new ProcessingHandler());
+                    ch.pipeline().addLast(new RequestDecoder(),
+                            new ResponseDataEncoder(),
+                            new ProcessingHandler());
+
                 }
             }).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
 
