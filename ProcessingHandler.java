@@ -29,6 +29,11 @@ public class ProcessingHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
+    public void channelInactive(final ChannelHandlerContext ctx) throws Exception {
+        channels1.remove(ctx.channel());
+    }
+
+    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         RequestData requestData = (RequestData) msg;
         ResponseData responseData = new ResponseData();
@@ -40,9 +45,13 @@ public class ProcessingHandler extends ChannelInboundHandlerAdapter {
             remoteAddr.add(ch.remoteAddress().toString());
             future = ch.writeAndFlush(responseData);
             //future.addListener(ChannelFutureListener.CLOSE);
+            if (ch.equals(ctx.channel())) {
+                continue;
+            }
+
             System.out.println("the requested data from the clients are: "+requestData);
-            responseData1.setIntValue(requestData.getIntValue());
-            future = ch.writeAndFlush(responseData1);
+            responseData1.setStringValue(requestData.toString());
+            ch.writeAndFlush(responseData1);
         }
         Set<String> hs = new HashSet<>();
         hs.addAll(remoteAddr);

@@ -22,14 +22,13 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         RequestData msg = new RequestData();
-        msg.setIntValue(123);
         msg.setStringValue("client message: client connected");
         ctx.writeAndFlush(msg);
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("The message sent from the server: " + msg);
+        System.out.println("The message sent from the server " + msg);
         update.accept(Integer.parseInt(msg.toString()));
     }
 

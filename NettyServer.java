@@ -17,7 +17,7 @@ public class NettyServer {
     private int port;
 
     private NettyServer(int port) {
-        this.port = port;
+        this.port = port; 
     }
 
     public static void main(String[] args) throws Exception {
