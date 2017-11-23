@@ -19,8 +19,14 @@ public class ProcessingHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
 
+        ResponseData responseData = new ResponseData();
+        ChannelFuture future;
+
         channels1.add(ctx.channel());
         for (Channel ch : channels1) {
+            responseData.setIntValue(channels1.size());
+            responseData.setStringValue("");
+            future = ch.writeAndFlush(responseData);
             System.out.println(ch);
             System.out.print(ch.hashCode());
         }
@@ -39,7 +45,6 @@ public class ProcessingHandler extends ChannelInboundHandlerAdapter {
         ResponseData responseData = new ResponseData();
         ResponseData responseData1 = new ResponseData();
         ChannelFuture future;
-
         for (Channel ch : channels1) {
             responseData.setIntValue(channels1.size());
             remoteAddr.add(ch.remoteAddress().toString());
@@ -48,8 +53,8 @@ public class ProcessingHandler extends ChannelInboundHandlerAdapter {
             if (ch.equals(ctx.channel())) {
                 continue;
             }
-
             System.out.println("the requested data from the clients are: "+requestData);
+            responseData1.setIntValue(2);
             responseData1.setStringValue(requestData.toString());
             ch.writeAndFlush(responseData1);
         }

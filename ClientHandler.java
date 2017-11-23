@@ -13,8 +13,6 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     public final IntConsumer update;
     ChannelHandlerContext ctx;
 
-
-
     public ClientHandler(IntConsumer update) {
         this.update = update;
     }
@@ -29,17 +27,9 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         System.out.println("The message sent from the server " + msg);
-        update.accept(Integer.parseInt(msg.toString()));
-    }
-
-    public void sendMessage(String msgToSend) {
-        if (ctx != null) {
-            ChannelFuture cf = ctx.writeAndFlush(Unpooled.copiedBuffer(msgToSend, CharsetUtil.UTF_8));
-            if (!cf.isSuccess()) {
-                System.out.println("Send failed: " + cf.cause());
-            }
-        } else {
-            //ctx not initialized yet. you were too fast. do something here
-        }
+        final ResponseData responseData = (ResponseData) msg;
+        System.out.println("The message sent from the server " + responseData);
+        update.accept(responseData.getIntValue());
+        //update.accept(Integer.parseInt(msg.toString()));
     }
 }

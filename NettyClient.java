@@ -1,14 +1,10 @@
 package chat;
-
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.Promise;
-import java.util.concurrent.TimeUnit;
 
 public class NettyClient {
 
@@ -21,7 +17,6 @@ public class NettyClient {
 
         String host = "localhost";
         int port = 8080;
-
         try {
             Bootstrap b = new Bootstrap();
             b.group(workerGroup);
@@ -58,9 +53,8 @@ public class NettyClient {
                 lock.notifyAll();
             }
         });
-
        ret = callBack();
-        int connected = connectedClients;
+            int connected = connectedClients;
         if (connected != 2) {
             System.out.println("The number if the connected clients is not two before locking");
             synchronized (lock) {
@@ -74,9 +68,5 @@ public class NettyClient {
             }
         }
         System.out.println("The number if the connected clients is two: " + connected );
-
-        RequestData msg = new RequestData();
-        msg.setIntValue(100);
-        ret.channel().writeAndFlush(msg);
     }
 }

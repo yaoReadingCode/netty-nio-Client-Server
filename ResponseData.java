@@ -11,8 +11,8 @@ public class ResponseData {
         this.intValue = intValue;
     }
 
-    int getStringValue() {
-        return intValue;
+    String getStringValue() {
+        return strValue;
     }
     void setStringValue(String strValue) {
         this.strValue = strValue;
@@ -20,6 +20,6 @@ public class ResponseData {
 
     @Override
     public String toString() {
-        return "" + intValue;
+        return intValue + ";" + strValue;
     }
 }
